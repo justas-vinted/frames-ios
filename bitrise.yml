@@ -129,6 +129,11 @@ workflows:
     - cache-push@2: {}
   
   # frames misc workflows
+  frames-app-store-validate:
+    after_run:
+    - _frames-set-up
+    - _frames-validate-pods-example
+    - _frames-slack
   frames-deploy:
     steps:
     - activate-ssh-key@4:
@@ -182,6 +187,28 @@ workflows:
     after_run: []
     before_run:
     - _frames-set-up
+  _frames-validate-pods-example:
+    steps:
+    - cocoapods-install@2.2:
+        inputs:
+        - podfile_path: "$PODFILE_PATH"
+    - script@1:
+        title: Bump app version
+        inputs:
+        - content: /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $(date -u +%y.%m.%d.%H.%M.%S)"
+            "${BITRISE_SOURCE_DIR}/iOS Example Frame/iOS Example Frame/Info.plist"
+    - xcode-archive@4:
+        inputs:
+        - configuration: ''
+        - distribution_method: ad-hoc
+        - scheme: "$APP_SCHEME"
+    - script@1:
+        title: Validate IPA
+        inputs:
+        - content: swift $BITRISE_SOURCE_DIR/scripts/appStoreValidate.swift
+    - deploy-to-bitrise-io@1: {}
+    - cache-push@2: {}
+    after_run: []
 
   # checkout pr workflows
   checkout-pr-checks:
