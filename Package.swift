@@ -12,6 +12,10 @@ let package = Package(
         .library(
             name: "Frames",
             targets: ["Frames"]
+        ),
+        .library(
+            name: "Checkout",
+            targets: ["Checkout"]
         )
     ],
     dependencies: [
