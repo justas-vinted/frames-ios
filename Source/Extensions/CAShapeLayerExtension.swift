@@ -14,7 +14,6 @@ extension CAShapeLayer {
     func createCustomBorder(with style: ElementBorderStyle) {
 
         // if path not nil then it's already added so no need to draw lines or curves again
-        guard self.path == nil else { return }
 
         // always fill is clear color
         fillColor = UIColor.clear.cgColor
@@ -23,8 +22,8 @@ extension CAShapeLayer {
         let rect = bounds.insetBy(dx: style.cornerRadius / 2,
                                   dy: style.cornerRadius / 2)
         let path = UIBezierPath()
-        applyBorders(with: path, rect: rect, style: style)
-        updateCorners(with: path, rect: rect, style: style)
+        applyBorders(with: path, rect: bounds, style: style)
+        updateCorners(with: path, rect: bounds, style: style)
         self.path = path.cgPath
     }
 
